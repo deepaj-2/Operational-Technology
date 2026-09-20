@@ -1,0 +1,85 @@
+﻿services:
+
+  openplc:
+    build:
+      context: ./openplc
+    container_name: openplc
+    restart: unless-stopped
+
+    ports:
+      - "8090:8080"
+      - "1502:502"
+
+    networks:
+      - otlab
+
+    volumes:
+      - openplc_data:/docker_persistent
+
+  scadabr:
+    build:
+      context: ./scadabr
+    container_name: scadabr
+    restart: unless-stopped
+
+    ports:
+      - "8081:8080"
+
+    networks:
+      - otlab
+
+    depends_on:
+      - openplc
+
+  modbus-client:
+    build:
+      context: ./modbus-client
+    container_name: modbus-client
+
+    networks:
+      - otlab
+
+    depends_on:
+      - openplc
+
+    profiles:
+      - tools
+
+  traffic:
+    build:
+      context: ./traffic
+    container_name: ot-traffic
+
+    networks:
+      - otlab
+
+    depends_on:
+      - openplc
+
+    profiles:
+      - traffic
+
+  attacker:
+    build:
+      context: ./attacker
+    container_name: ot-attacker
+
+    networks:
+      - otlab
+
+    depends_on:
+      - openplc
+
+    profiles:
+      - attack
+
+
+networks:
+
+  otlab:
+    driver: bridge
+
+
+volumes:
+
+  openplc_data:
