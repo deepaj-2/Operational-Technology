@@ -42,5 +42,5 @@ The Docker configuration, PLC logic, traffic generator, controlled attack script
 
 ## Status
 
-Core OT cyber-range implementation completed.
+Core OT cyberrange implementation completed.
 
